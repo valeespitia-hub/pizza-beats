@@ -6,3 +6,6 @@ node_modules/
 # Archivos del sistema y respaldos automáticos de Blender
 .DS_Store
 *.blend1
+
+# Carpeta generada por build.sh para Render
+dist/
