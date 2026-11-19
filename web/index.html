@@ -1,0 +1,1053 @@
+<title>Pizza Beats</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:ital,wdth,wght@0,75..125,400..900;1,75..125,400..900&family=Bowlby+One&display=swap">
+<style>
+/* Estilo: afiche de pizzería serigrafiado. Papel crema con grano, tinta azul para toda línea, rojo para la marca, cuadros azules arriba y abajo. */
+:root {
+  --papel: #FAE8C9;
+  --papel-claro: #FFF8EA;
+  --rojo: #D8432F;
+  --rojo-osc: #B23322;
+  --azul: #2C4C9A;
+  --azul-osc: #1F3A7D;
+  --amarillo: #F2B33D;
+  --tinta-suave: #5A6488;
+  --linea-suave: rgba(44, 76, 154, .22);
+  --logo: "Bowlby One", "Arial Black", Impact, sans-serif;
+  --texto: "Archivo", "Helvetica Neue", Arial, sans-serif;
+  --borde: 2.5px solid var(--azul);
+  --sombra: 0 4px 0 var(--azul);
+  --grano: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='220' height='220'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='.8' numOctaves='3' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 0.45  0 0 0 0 0.36  0 0 0 0 0.22  0 0 0 .11 0'/></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>");
+  --cuadros: conic-gradient(var(--azul) 25%, transparent 0 50%, var(--azul) 0 75%, transparent 0);
+  color-scheme: light;
+}
+html, body { height: 100%; }
+body {
+  background: var(--papel) var(--grano);
+  color: var(--azul);
+  font-family: var(--texto);
+  font-size: 15px; line-height: 1.45;
+  display: grid; grid-template-rows: auto auto minmax(0, 1fr) auto;
+  overflow: hidden;
+}
+button, input, select { font: inherit; color: inherit; }
+button { cursor: pointer; }
+:focus-visible { outline: 3px solid var(--amarillo); outline-offset: 2px; }
+h1, h2, h3 { margin: 0; text-wrap: balance; }
+p { margin: 0; }
+.impreso { filter: url(#tinta); }
+
+/* ---------- logo ---------- */
+.logo-pb { position: relative; display: inline-grid; justify-items: start; line-height: .86; color: var(--rojo); font-family: var(--logo); text-transform: uppercase; transform: rotate(-5deg) skewX(-9deg); }
+.logo-pb .l1 { font-size: 1em; }
+.logo-pb .l2 { font-size: 1em; margin-left: .18em; }
+.logo-pb .disco { position: absolute; right: -.62em; top: .32em; width: 1.05em; height: 1.05em; z-index: -1; transform: skewX(9deg); }
+.logo-pb .trazo { position: absolute; left: .55em; bottom: -.34em; width: 2.4em; height: .3em; }
+.logo-chico { font-size: 22px; background: none; border: 0; padding: 4px 18px 4px 2px; }
+
+/* ---------- barra superior del juego ---------- */
+.topbar {
+  display: flex; align-items: center; gap: 12px; background: var(--papel);
+  padding-block: 10px 8px;
+  padding-left: max(16px, env(safe-area-inset-left, 0px));
+  padding-right: max(16px, env(safe-area-inset-right, 0px));
+}
+.topbar .sp { flex: 1; }
+.ico {
+  width: 40px; height: 40px; border-radius: 50%; border: var(--borde); background: var(--papel-claro); color: var(--azul);
+  font-family: var(--logo); font-size: 18px; display: grid; place-items: center; padding: 0;
+}
+.cinta { height: 24px; background: var(--cuadros) 0 0 / 24px 24px; }
+
+/* ---------- distribución del juego ---------- */
+.juego { display: grid; grid-template-columns: 250px minmax(0, 1fr) 340px; min-height: 0; border-top: var(--borde); }
+.col { min-height: 0; overflow: auto; }
+.ingredientes { border-right: var(--borde); padding: 14px 12px 14px max(16px, env(safe-area-inset-left, 0px)); display: flex; flex-direction: column; gap: 10px; }
+.etiqueta { font-size: 12px; font-weight: 800; font-stretch: 80%; letter-spacing: .12em; text-transform: uppercase; color: var(--tinta-suave); }
+.lista { display: grid; gap: 7px; }
+.card {
+  display: grid; grid-template-columns: 38px 1fr auto; align-items: center; gap: 10px; text-align: left; padding: 6px 10px 6px 6px;
+  background: var(--papel-claro); border: 2px solid var(--azul); border-radius: 14px;
+  touch-action: none; user-select: none; -webkit-user-select: none; transition: transform .12s, box-shadow .12s;
+}
+.card:hover { transform: translateY(-2px); box-shadow: 0 3px 0 var(--azul); }
+.card[aria-current="true"] { box-shadow: 0 3px 0 var(--rojo); border-color: var(--rojo); }
+.bowl {
+  width: 38px; height: 38px; border-radius: 50%; border: 2px solid var(--azul); box-sizing: border-box;
+  background: radial-gradient(circle at 50% 50%, var(--c) 0 56%, #e4e7ea 58% 74%, #b9c0c8 76%);
+}
+.card b { display: block; font-size: 15px; line-height: 1.15; color: var(--azul-osc); }
+.card small { display: block; font-size: 11px; font-weight: 800; font-stretch: 80%; letter-spacing: .1em; color: var(--rojo); }
+.card .estado { font-size: 11px; font-weight: 800; font-stretch: 80%; letter-spacing: .08em; color: var(--tinta-suave); }
+.card.added .estado { color: var(--papel-claro); background: var(--azul); border-radius: 999px; padding: 2px 7px; }
+
+.escena { position: relative; min-height: 0; overflow: hidden; }
+.escena canvas { display: block; width: 100%; height: 100%; touch-action: none; }
+.grano3d { position: absolute; inset: 0; pointer-events: none; background: var(--grano); mix-blend-mode: multiply; opacity: .9; }
+.pista {
+  position: absolute; left: 50%; top: 14px; transform: translateX(-50%);
+  background: var(--papel-claro); border: var(--borde); border-radius: 999px; box-shadow: var(--sombra);
+  padding: 6px 16px; font-weight: 800; font-size: 14px; white-space: nowrap; max-width: calc(100% - 140px); overflow: hidden; text-overflow: ellipsis;
+  pointer-events: none;
+}
+.cargando { position: absolute; inset: 0; display: grid; place-items: center; font-family: var(--logo); font-size: 26px; color: var(--rojo); }
+.dj-mini {
+  position: absolute; left: 14px; top: 10px; width: 92px; height: 92px; border-radius: 50%; border: 3px solid var(--azul);
+  background: var(--papel) url("dj.png") 52% 4% / 190% auto no-repeat; box-shadow: 0 4px 0 var(--azul); pointer-events: none;
+  transform-origin: 50% 100%;
+}
+
+/* ---------- panel ---------- */
+.panel { border-left: var(--borde); padding: 14px max(16px, env(safe-area-inset-right, 0px)) 18px 16px; display: flex; flex-direction: column; gap: 14px; }
+.ing-head { display: grid; grid-template-columns: 56px 1fr; gap: 12px; align-items: center; }
+.ing-head .bowl { width: 56px; height: 56px; border-width: 2.5px; }
+.ing-head h2 { font-family: var(--logo); font-weight: 400; font-size: 26px; line-height: 1; color: var(--rojo); text-transform: uppercase; transform: skewX(-8deg); transform-origin: left; }
+.fn { display: inline-block; margin-top: 6px; background: var(--azul); color: var(--papel-claro); font-weight: 900; font-style: italic; font-stretch: 80%; letter-spacing: .1em; font-size: 12px; padding: 3px 10px; border-radius: 999px; }
+.desc { font-weight: 800; color: var(--azul-osc); }
+.ayuda { color: var(--tinta-suave); font-size: 14px; }
+.bloque { border: var(--borde); border-radius: 16px; background: var(--papel-claro); padding: 12px; display: grid; gap: 12px; box-shadow: var(--sombra); }
+.bloque.apagado { background: repeating-linear-gradient(-45deg, var(--papel-claro) 0 10px, #f3e6cb 10px 20px); }
+.btn {
+  border: var(--borde); border-radius: 999px; padding: 8px 18px; font-weight: 900; font-style: italic; font-stretch: 85%; text-transform: uppercase; letter-spacing: .04em;
+  box-shadow: var(--sombra); background: var(--papel-claro); color: var(--azul); transition: transform .08s, box-shadow .08s;
+}
+.btn:active { transform: translateY(3px); box-shadow: 0 1px 0 var(--azul); }
+.btn:disabled { opacity: .45; cursor: not-allowed; }
+.btn-rojo { background: var(--rojo); color: var(--papel-claro); }
+.btn-azul { background: var(--azul); color: var(--papel-claro); box-shadow: 0 4px 0 var(--azul-osc); }
+.btn-amarillo { background: var(--amarillo); }
+.link { background: none; border: 0; padding: 0; text-decoration: underline; color: var(--tinta-suave); font-size: 13px; justify-self: start; }
+.seg { display: grid; grid-template-columns: 1fr 1fr; border: var(--borde); border-radius: 999px; overflow: hidden; }
+.seg button { border: 0; background: transparent; padding: 6px; font-weight: 900; font-style: italic; font-stretch: 85%; letter-spacing: .06em; text-transform: uppercase; color: var(--azul); }
+.seg button[aria-pressed="true"] { background: var(--azul); color: var(--papel-claro); }
+.campo { display: grid; gap: 4px; }
+.campo label { display: flex; justify-content: space-between; font-size: 13px; font-weight: 800; }
+.campo output { font-variant-numeric: tabular-nums; color: var(--rojo); font-weight: 900; }
+input[type="range"] { width: 100%; accent-color: var(--rojo); }
+.tracklist { display: grid; gap: 8px; }
+.track { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 8px; align-items: center; padding: 8px 10px; border: 2px solid var(--linea-suave); border-radius: 12px; }
+.track b { display: block; overflow-wrap: anywhere; line-height: 1.2; color: var(--azul-osc); }
+.track small { color: var(--tinta-suave); font-size: 12px; }
+.mini { border: 2px solid var(--azul); background: var(--papel-claro); color: var(--azul); border-radius: 10px; width: 34px; height: 30px; font-weight: 900; }
+.mini.on { background: var(--azul); color: var(--papel-claro); }
+.track-btns { display: flex; gap: 6px; }
+.nota { font-size: 12px; color: var(--tinta-suave); }
+.pads { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+.pad { border: var(--borde); border-radius: 14px; padding: 12px 6px; font-weight: 900; background: var(--papel-claro); color: var(--azul); display: grid; gap: 2px; }
+.pad.set { background: var(--amarillo); }
+.pad small { font-weight: 600; font-variant-numeric: tabular-nums; }
+.plays { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+.play { border: var(--borde); border-radius: 18px; padding: 14px 8px; font-weight: 900; font-style: italic; text-transform: uppercase; box-shadow: var(--sombra); background: var(--papel-claro); color: var(--azul); display: grid; gap: 4px; justify-items: center; }
+.play .olive { width: 34px; height: 34px; border-radius: 50%; background: radial-gradient(circle, var(--rojo) 0 28%, #26212B 30%); border: 2px solid var(--azul); }
+.play.on { background: var(--azul); color: var(--papel-claro); }
+.play:disabled { opacity: .45; cursor: not-allowed; }
+.fila { display: flex; flex-wrap: wrap; gap: 8px; }
+.estado-linea { font-size: 13px; font-weight: 800; color: var(--rojo); }
+#jog { width: 200px; height: 200px; justify-self: center; touch-action: none; cursor: grab; border-radius: 50%; }
+.meter { height: 12px; border: 2px solid var(--azul); border-radius: 999px; overflow: hidden; background: var(--papel-claro); }
+.meter i { display: block; height: 100%; width: 0; background: linear-gradient(90deg, var(--azul), var(--amarillo) 70%, var(--rojo)); }
+
+/* ---------- platos (abajo) ---------- */
+.platos {
+  border-top: var(--borde); background: var(--azul); color: var(--papel-claro);
+  display: grid; grid-template-columns: 1fr 1fr auto; gap: 14px; align-items: center;
+  padding-block: 10px;
+  padding-left: max(16px, env(safe-area-inset-left, 0px));
+  padding-right: max(16px, env(safe-area-inset-right, 0px));
+}
+.deck { min-width: 0; display: grid; gap: 4px; }
+.deck-top { display: flex; gap: 10px; align-items: baseline; font-variant-numeric: tabular-nums; font-size: 13px; min-width: 0; }
+.deck-tag { font-family: var(--logo); font-size: 18px; line-height: 1; color: var(--amarillo); }
+.deck-name { font-weight: 800; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; min-width: 0; flex: 1; }
+.deck-bpm, .deck-time { opacity: .85; white-space: nowrap; }
+.deck canvas { width: 100%; height: 40px; display: block; cursor: pointer; border-radius: 8px; background: rgba(255, 248, 234, .08); }
+.platos .btn-rojo { box-shadow: 0 4px 0 var(--azul-osc); border-color: var(--papel-claro); }
+
+/* ---------- pantalla de inicio (como la ilustración) ---------- */
+.inicio {
+  position: fixed; inset: 0; z-index: 20; background: var(--papel) var(--grano);
+  display: grid; grid-template-rows: auto minmax(0, 1fr) auto;
+}
+.inicio .cinta { height: 44px; background-size: 44px 44px; }
+.portada {
+  display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); align-items: center; gap: 24px; position: relative; min-height: 0;
+  padding-block: 12px;
+  padding-left: max(16px, env(safe-area-inset-left, 0px));
+  padding-right: max(16px, env(safe-area-inset-right, 0px));
+}
+.portada .ilustracion { width: 100%; max-width: 100%; max-height: 100%; object-fit: contain; object-position: 50% 100%; justify-self: center; align-self: end; margin-bottom: -12px; min-height: 0; }
+.portada .lado { display: grid; justify-items: center; gap: 26px; }
+.portada .logo-pb { font-size: clamp(54px, 9.2vw, 128px); margin-right: .6em; }
+.portada .acciones { display: grid; gap: 16px; justify-items: center; width: min(460px, 100%); }
+.btn-grande {
+  width: 100%; display: flex; justify-content: center; align-items: center; gap: 14px;
+  font-family: var(--texto); font-weight: 900; font-style: italic; font-stretch: 85%; text-transform: uppercase; letter-spacing: .02em;
+  border-radius: 999px; cursor: pointer;
+}
+.btn-mix { font-size: clamp(24px, 3.4vw, 44px); padding: 14px 28px; background: var(--rojo); color: var(--papel-claro); border: 3px solid var(--rojo-osc); box-shadow: 0 7px 0 var(--azul); }
+.btn-mix:active { transform: translateY(5px); box-shadow: 0 2px 0 var(--azul); }
+.btn-mix .tri { width: 0; height: 0; border-left: .7em solid currentColor; border-block: .42em solid transparent; }
+.btn-linea { font-size: clamp(18px, 2.2vw, 28px); padding: 10px 24px; width: 78%; background: transparent; color: var(--azul); border: 3px solid var(--azul); }
+.btn-linea:hover { background: rgba(44, 76, 154, .07); }
+.barras { display: inline-flex; gap: 3px; align-items: flex-end; height: .9em; }
+.barras i { width: .17em; background: currentColor; border-radius: 1px; }
+.portada .ico-ayuda { position: absolute; right: max(16px, env(safe-area-inset-right, 0px)); top: 8px; width: 52px; height: 52px; font-size: 24px; }
+
+dialog {
+  border: 3px solid var(--azul); border-radius: 24px; box-shadow: 0 8px 0 var(--azul); background: var(--papel) var(--grano); color: var(--azul);
+  width: min(620px, calc(100vw - 32px)); max-height: calc(100vh - 48px); padding: 0;
+}
+dialog::backdrop { background: rgba(31, 58, 125, .45); }
+.dlg { padding: 22px; display: grid; gap: 14px; }
+.dlg h2 { font-family: var(--logo); font-weight: 400; font-size: 32px; color: var(--rojo); line-height: 1; text-transform: uppercase; transform: skewX(-8deg); transform-origin: left; }
+.dlg .cerrar { justify-self: end; }
+.pasos { margin: 0; padding-left: 22px; display: grid; gap: 6px; }
+.tabla-wrap { overflow-x: auto; border: 2px solid var(--azul); border-radius: 14px; }
+table { border-collapse: collapse; width: 100%; font-size: 14px; }
+th, td { text-align: left; padding: 7px 10px; border-bottom: 1px solid var(--linea-suave); }
+th { background: var(--azul); color: var(--papel-claro); font-stretch: 85%; letter-spacing: .06em; text-transform: uppercase; font-size: 12px; }
+td:nth-child(2) { font-weight: 900; font-style: italic; font-stretch: 85%; color: var(--rojo); }
+.aviso { background: #fff1cc; border: 2px solid var(--amarillo); border-radius: 12px; padding: 10px 12px; font-size: 14px; }
+.chips { display: flex; flex-wrap: wrap; gap: 6px; }
+.chip { display: inline-flex; align-items: center; gap: 6px; border: 2px solid var(--azul); border-radius: 999px; padding: 2px 10px 2px 4px; font-size: 13px; font-weight: 800; background: var(--papel-claro); }
+.chip i { width: 14px; height: 14px; border-radius: 50%; background: var(--c); }
+.mixes { display: grid; gap: 10px; }
+.mix { display: grid; grid-template-columns: 110px minmax(0, 1fr); gap: 12px; border: 2px solid var(--azul); border-radius: 16px; padding: 10px; background: var(--papel-claro); }
+.mix img { width: 110px; height: 72px; object-fit: cover; border-radius: 10px; background: var(--papel); }
+.mix h3 { font-size: 17px; overflow-wrap: anywhere; color: var(--azul-osc); }
+.mix .meta { font-size: 12px; color: var(--tinta-suave); }
+.mix .fila { margin-top: 6px; }
+.vacio { text-align: center; color: var(--tinta-suave); padding: 18px; border: 2px dashed var(--linea-suave); border-radius: 14px; }
+.foto { width: 100%; max-width: 100%; border-radius: 16px; border: 2px solid var(--azul); background: var(--papel); }
+.campo-texto { border: var(--borde); border-radius: 12px; padding: 10px 12px; background: var(--papel-claro); width: 100%; box-sizing: border-box; font-size: 16px; }
+.ghost { position: fixed; z-index: 30; width: 58px; height: 58px; margin: -29px 0 0 -29px; pointer-events: none; filter: drop-shadow(0 5px 0 rgba(44, 76, 154, .55)); }
+.ghost .bowl { width: 58px; height: 58px; border-width: 3px; }
+.toast {
+  position: fixed; z-index: 40; left: 50%; bottom: 96px; transform: translateX(-50%);
+  background: var(--amarillo); color: var(--azul-osc); border: var(--borde); border-radius: 999px; box-shadow: var(--sombra);
+  padding: 8px 18px; font-weight: 900; font-style: italic; max-width: calc(100vw - 32px); text-align: center;
+  transition: opacity .25s; opacity: 0; pointer-events: none;
+}
+.toast.show { opacity: 1; }
+
+/* ---------- pantallas angostas ---------- */
+@media (max-width: 960px) {
+  body { overflow: auto; grid-template-rows: auto auto auto auto auto; height: auto; min-height: 100%; }
+  .juego { grid-template-columns: 1fr; }
+  .escena { height: 56vh; min-height: 320px; order: 1; }
+  .ingredientes { order: 2; border-right: 0; border-block: var(--borde); padding: 12px max(16px, env(safe-area-inset-right, 0px)) 12px max(16px, env(safe-area-inset-left, 0px)); }
+  .lista { grid-auto-flow: column; grid-auto-columns: 180px; overflow-x: auto; padding-bottom: 6px; }
+  .card { touch-action: pan-x; }
+  .panel { order: 3; border-left: 0; padding: 16px max(16px, env(safe-area-inset-right, 0px)) 18px max(16px, env(safe-area-inset-left, 0px)); }
+  .platos { grid-template-columns: 1fr; }
+  .dj-mini { width: 64px; height: 64px; }
+  .pista { max-width: calc(100% - 100px); left: auto; right: 12px; transform: none; }
+  .inicio { overflow: auto; }
+  .portada { grid-template-columns: 1fr; gap: 10px; }
+  .portada .ilustracion { max-height: 38vh; order: 2; }
+  .portada .lado { order: 1; padding-top: 40px; }
+}
+@media (prefers-reduced-motion: reduce) { * { transition: none !important; } }
+</style>
+
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <filter id="tinta" x="-5%" y="-5%" width="110%" height="110%">
+    <feTurbulence type="fractalNoise" baseFrequency="1.1" numOctaves="2" seed="4" result="n"/>
+    <feColorMatrix in="n" type="matrix" values="0 0 0 0 0  0 0 0 0 0  0 0 0 0 0  0 0 0 -3.2 2.55" result="m"/>
+    <feComposite in="SourceGraphic" in2="m" operator="in" result="g"/>
+    <feTurbulence type="fractalNoise" baseFrequency=".05" numOctaves="2" seed="9" result="d"/>
+    <feDisplacementMap in="g" in2="d" scale="2.2"/>
+  </filter>
+</svg>
+
+<header class="topbar">
+  <button class="logo-pb logo-chico impreso" id="ir-inicio" title="Volver al inicio"><span class="l1">Pizza</span><span class="l2">Beats</span></button>
+  <span class="sp"></span>
+  <button class="btn" id="abrir-mixes-top"><span class="barras" aria-hidden="true"><i style="height:45%"></i><i style="height:80%"></i><i style="height:60%"></i><i style="height:100%"></i></span> Tus mixes</button>
+  <button class="ico" id="abrir-ayuda" aria-label="Instrucciones del juego">?</button>
+</header>
+<div class="cinta impreso" aria-hidden="true"></div>
+
+<main class="juego">
+  <aside class="col ingredientes" aria-label="Ingredientes">
+    <span class="etiqueta">Ingredientes · arrastra a la masa</span>
+    <div class="lista" id="lista"></div>
+  </aside>
+  <section class="escena" id="escena" aria-label="Mesa de la pizzería en 3D">
+    <div class="grano3d" aria-hidden="true"></div>
+    <div class="cargando" id="cargando">Calentando el horno…</div>
+    <div class="dj-mini" id="dj-mini" aria-hidden="true"></div>
+    <div class="pista" id="pista">Arrastra la Salsa a la masa para elegir canciones</div>
+  </section>
+  <aside class="col panel" id="panel" aria-label="Función del ingrediente"></aside>
+</main>
+
+<footer class="platos">
+  <div class="deck">
+    <div class="deck-top"><span class="deck-tag">A</span><span class="deck-name" id="name-A">Sin canción</span><span class="deck-bpm" id="bpm-A">— BPM</span><span class="deck-time" id="time-A">0:00</span></div>
+    <canvas id="wave-A" aria-label="Forma de onda del plato A. Haz clic para saltar."></canvas>
+  </div>
+  <div class="deck">
+    <div class="deck-top"><span class="deck-tag">B</span><span class="deck-name" id="name-B">Sin canción</span><span class="deck-bpm" id="bpm-B">— BPM</span><span class="deck-time" id="time-B">0:00</span></div>
+    <canvas id="wave-B" aria-label="Forma de onda del plato B. Haz clic para saltar."></canvas>
+  </div>
+  <button class="btn btn-rojo" id="terminar">Terminar pizza</button>
+</footer>
+
+<div class="inicio" id="inicio">
+  <div class="cinta impreso" aria-hidden="true"></div>
+  <div class="portada">
+    <img class="ilustracion" src="dj.png" alt="Un DJ con gorra roja al revés prepara una pizza de pepperoni sobre su tornamesa">
+    <div class="lado">
+      <h1 class="logo-pb impreso" aria-label="Pizza Beats">
+        <svg class="disco" viewBox="0 0 100 100" aria-hidden="true"><circle cx="50" cy="50" r="48" fill="#2C4C9A"/><g fill="none" stroke="#F8EEDB" stroke-width="1.6" opacity=".75"><circle cx="50" cy="50" r="40"/><circle cx="50" cy="50" r="33"/><circle cx="50" cy="50" r="26"/></g><circle cx="50" cy="50" r="15" fill="#F8EEDB"/><circle cx="50" cy="50" r="3.5" fill="#2C4C9A"/></svg>
+        <span class="l1">Pizza</span><span class="l2">Beats</span>
+        <svg class="trazo" viewBox="0 0 240 30" aria-hidden="true"><path d="M4 22 C 70 6, 150 2, 236 12" fill="none" stroke="#2C4C9A" stroke-width="7" stroke-linecap="round"/></svg>
+      </h1>
+      <div class="acciones">
+        <button class="btn-grande btn-mix impreso" id="iniciar">Iniciar mix <span class="tri" aria-hidden="true"></span></button>
+        <button class="btn-grande btn-linea" id="abrir-mixes"><span class="barras" aria-hidden="true"><i style="height:45%"></i><i style="height:80%"></i><i style="height:60%"></i><i style="height:100%"></i></span> Tus mixes</button>
+        <button class="btn-grande btn-linea" id="multi">Multijugador</button>
+      </div>
+    </div>
+    <button class="ico ico-ayuda" id="abrir-ayuda-2" aria-label="Instrucciones del juego">?</button>
+  </div>
+  <div class="cinta impreso" aria-hidden="true"></div>
+</div>
+
+<dialog id="dlg-ayuda"><div class="dlg">
+  <h2>Cómo se juega</h2>
+  <ol class="pasos">
+    <li><b>Elige cómo jugar:</b> inicia una mezcla individual.</li>
+    <li><b>Explora los ingredientes:</b> toca un recipiente para ver qué función de DJ representa.</li>
+    <li><b>Construye la pizza:</b> arrastra el ingrediente a la masa. Al caer, enciende su función.</li>
+    <li><b>Experimenta con la música:</b> usa los controles del panel derecho. Empieza por Salsa (canciones) y Aceitunas (play).</li>
+    <li><b>Finaliza y guarda:</b> toca «Terminar pizza», ponle nombre y guárdala en «Tus mixes».</li>
+  </ol>
+  <div class="tabla-wrap"><table>
+    <thead><tr><th>Ingrediente</th><th>Función</th><th>¿Qué permite hacer?</th></tr></thead>
+    <tbody id="tabla-ing"></tbody>
+  </table></div>
+  <p class="nota">Gira la mesa arrastrando el fondo y acércate con la rueda del mouse.</p>
+  <button class="btn cerrar" data-cerrar>Entendido</button>
+</div></dialog>
+
+<dialog id="dlg-multi"><div class="dlg">
+  <h2>Multijugador</h2>
+  <p>En el modo multijugador varias personas entran a una misma sala con un código o enlace y arman juntas una sola pizza y una sola mezcla, en tiempo real.</p>
+  <p class="aviso">Las salas todavía no están disponibles en esta versión de prueba, porque necesitan un servidor que conecte a los jugadores. Por ahora puedes jugar en modo individual.</p>
+  <div class="fila"><button class="btn btn-rojo" id="multi-individual">Jugar individual</button><button class="btn" data-cerrar>Volver</button></div>
+</div></dialog>
+
+<dialog id="dlg-mixes"><div class="dlg">
+  <h2>Tus mixes</h2>
+  <p class="nota">Se guardan en este navegador. Las canciones que subiste no se guardan: si abres un mix que las usaba, vuelve a subirlas.</p>
+  <div class="mixes" id="mixes"></div>
+  <button class="btn cerrar" data-cerrar>Cerrar</button>
+</div></dialog>
+
+<dialog id="dlg-terminar"><div class="dlg">
+  <h2>¡Pizza lista!</h2>
+  <img class="foto" id="foto" alt="Tu pizza terminada">
+  <div class="chips" id="resumen"></div>
+  <p class="nota" id="resumen-platos"></p>
+  <div class="campo"><label for="nombre-mix">Nombre de tu mix</label><input class="campo-texto" id="nombre-mix" maxlength="60" placeholder="Ej.: La Margarita del viernes"></div>
+  <div class="fila"><button class="btn btn-rojo" id="guardar">Guardar en Tus mixes</button><button class="btn" data-cerrar>Seguir mezclando</button></div>
+</div></dialog>
+
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+<script src="modelo.js"></script>
+<script type="importmap">
+{ "imports": {
+  "three": "https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js",
+  "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/"
+} }
+</script>
+<script type="module">
+import * as THREE from 'three';
+import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
+import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
+import { mergeVertices } from 'three/addons/utils/BufferGeometryUtils.js';
+
+/* =========================================================
+   Datos de ingredientes (de PROYECTO.md)
+   ========================================================= */
+const ING = [
+  { id: 'salsa', nodo: 'Salsa', nombre: 'Salsa', fn: 'TRACKS', color: '#B5261E', desc: 'Seleccionar canciones incluidas o subir archivos propios',
+    ayuda: 'La salsa es la base. Elige qué canción suena en cada plato (A y B): usa las pistas incluidas o sube un archivo de música desde tu computador.' },
+  { id: 'queso', nodo: 'Queso', nombre: 'Queso', fn: 'EQ', color: '#F4D27A', desc: 'Ajustar bajos, medios y agudos',
+    ayuda: 'El ecualizador sube o baja tres zonas del sonido. Bajar los bajos de una canción deja espacio para que entre la otra.' },
+  { id: 'pepperoni', nodo: 'Pepperoni', nombre: 'Pepperoni', fn: 'JOG WHEEL', color: '#A8322A', desc: 'Manipular la reproducción y hacer scratches',
+    ayuda: 'Gira el pepperoni con el mouse. Rápido hace scratch; despacio empuja la canción hacia adelante o hacia atrás.' },
+  { id: 'jamon', nodo: 'Jamon', nombre: 'Jamón', fn: 'VOLUMEN', color: '#E9A0A0', desc: 'Controlar el volumen',
+    ayuda: 'Cada plato tiene su volumen. Súbelo para incorporar una canción a la mezcla y bájalo para sacarla.' },
+  { id: 'pina', nodo: 'Pina', nombre: 'Piña', fn: 'EFECTOS', color: '#F2D35B', desc: 'Aplicar eco, reverb y filtros',
+    ayuda: 'El eco repite el sonido, la reverb lo hace sonar como en una sala grande y el filtro corta los graves o los agudos.' },
+  { id: 'albahaca', nodo: 'Albahaca', nombre: 'Albahaca', fn: 'HOT CUES', color: '#2F7D32', desc: 'Marcar momentos específicos de una canción',
+    ayuda: 'Toca un pad vacío para marcar el momento actual. Tócalo otra vez para saltar a ese momento.' },
+  { id: 'aceitunas', nodo: 'Aceitunas', nombre: 'Aceitunas', fn: 'PLAY / PAUSE', color: '#1E1E1E', desc: 'Reproducir y pausar',
+    ayuda: 'Cada aceituna es el botón de un plato. Tócala para que suene; tócala otra vez para pausar.' },
+  { id: 'champinones', nodo: 'Champinones', nombre: 'Champiñones', fn: 'LOOP', color: '#C9AE8C', desc: 'Repetir fragmentos de una canción',
+    ayuda: 'Elige cuántos compases repetir desde el momento actual. Sal del loop cuando quieras que la canción siga.' },
+  { id: 'maiz', nodo: 'Maiz', nombre: 'Maíz', fn: 'SYNC', color: '#F5C518', desc: 'Sincronizar el ritmo de las canciones',
+    ayuda: 'Iguala la velocidad del plato elegido con la del otro y alinea los golpes para que suenen juntos.' },
+  { id: 'jalapeno', nodo: 'Jalapeno', nombre: 'Jalapeño', fn: 'TEMPO', color: '#3E8E3A', desc: 'Modificar la velocidad de reproducción',
+    ayuda: 'Acelera o frena la canción. Como en un vinilo, al cambiar la velocidad también cambia el tono.' },
+  { id: 'oregano', nodo: 'Oregano', nombre: 'Orégano', fn: 'MASTER', color: '#5A6B2E', desc: 'Controlar el volumen general',
+    ayuda: 'Es el volumen de todo lo que sale de la consola, después de mezclar los dos platos y los efectos.' },
+  { id: 'anchoas', nodo: 'Anchoas', nombre: 'Anchoas', fn: 'CUE', color: '#7A6E62', desc: 'Escuchar una canción antes de incorporarla',
+    ayuda: 'En una consola real se escucha por audífonos. Aquí bajamos la mezcla para que oigas el otro plato y decidas si entra.' },
+];
+const BY = Object.fromEntries(ING.map(i => [i.id, i]));
+const BY_NODO = Object.fromEntries(ING.map(i => [i.nodo, i]));
+
+/* =========================================================
+   Utilidades
+   ========================================================= */
+const $ = s => document.querySelector(s);
+const esc = s => String(s).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+const fmt = s => { s = Math.max(0, s || 0); const m = Math.floor(s / 60); return m + ':' + String(Math.floor(s % 60)).padStart(2, '0'); };
+const clamp = (v, a, b) => Math.min(b, Math.max(a, v));
+let toastT = 0;
+function toast(msg) { const t = $('#toast'); t.textContent = msg; t.classList.add('show'); clearTimeout(toastT); toastT = setTimeout(() => t.classList.remove('show'), 2600); }
+const store = {
+  get() { try { return JSON.parse(localStorage.getItem('pizzabeats.mixes') || '[]'); } catch { return []; } },
+  set(v) { try { localStorage.setItem('pizzabeats.mixes', JSON.stringify(v)); return true; } catch { return false; } },
+};
+
+/* =========================================================
+   Audio: pistas incluidas (sintetizadas en el navegador)
+   ========================================================= */
+const SR = 44100;
+const midiF = m => 440 * Math.pow(2, (m - 69) / 12);
+function instrumentos(oc, out, noise) {
+  const env = (g, t, a, peak, d) => { g.gain.setValueAtTime(0.0001, t); g.gain.exponentialRampToValueAtTime(peak, t + a); g.gain.exponentialRampToValueAtTime(0.0001, t + a + d); };
+  const ruido = (t, dur) => { const n = oc.createBufferSource(); n.buffer = noise; n.start(t, Math.random() * .5); n.stop(t + dur); return n; };
+  const filtro = (type, f, q = 1) => { const b = oc.createBiquadFilter(); b.type = type; b.frequency.value = f; b.Q.value = q; return b; };
+  return {
+    kick(t, v = 1) { const o = oc.createOscillator(), g = oc.createGain(); o.frequency.setValueAtTime(160, t); o.frequency.exponentialRampToValueAtTime(42, t + .13); env(g, t, .002, v, .42); o.connect(g).connect(out); o.start(t); o.stop(t + .5); },
+    snare(t, v = .5) {
+      const g = oc.createGain(); env(g, t, .002, v, .17); ruido(t, .25).connect(filtro('bandpass', 1900, .7)).connect(g).connect(out);
+      const o = oc.createOscillator(), g2 = oc.createGain(); o.type = 'triangle'; o.frequency.setValueAtTime(200, t); o.frequency.exponentialRampToValueAtTime(140, t + .08); env(g2, t, .002, v * .6, .09); o.connect(g2).connect(out); o.start(t); o.stop(t + .15);
+    },
+    clap(t, v = .5) { for (let k = 0; k < 3; k++) { const tt = t + k * .011, g = oc.createGain(); env(g, tt, .001, v * (k === 2 ? 1 : .6), k === 2 ? .16 : .02); ruido(tt, .22).connect(filtro('bandpass', 1300, 1.2)).connect(g).connect(out); } },
+    hat(t, v = .15, open = false) { const g = oc.createGain(); env(g, t, .001, v, open ? .22 : .045); ruido(t, .3).connect(filtro('highpass', 7800)).connect(g).connect(out); },
+    bass(t, m, d, v = .36) {
+      const o = oc.createOscillator(), f = filtro('lowpass', 1400, 6), g = oc.createGain(); o.type = 'sawtooth'; o.frequency.value = midiF(m);
+      f.frequency.setValueAtTime(1400, t); f.frequency.exponentialRampToValueAtTime(220, t + d);
+      g.gain.setValueAtTime(0.0001, t); g.gain.exponentialRampToValueAtTime(v, t + .006); g.gain.linearRampToValueAtTime(v * .7, t + d * .8); g.gain.exponentialRampToValueAtTime(0.0001, t + d + .04);
+      o.connect(f).connect(g).connect(out); o.start(t); o.stop(t + d + .06);
+    },
+    stab(t, ms, d, v = .07, type = 'square', cut = 2400) {
+      const f = filtro('lowpass', cut, .8), g = oc.createGain(); env(g, t, .004, v, d); f.connect(g).connect(out);
+      ms.forEach(m => { const o = oc.createOscillator(); o.type = type; o.frequency.value = midiF(m); o.detune.value = (Math.random() - .5) * 14; o.connect(f); o.start(t); o.stop(t + d + .1); });
+    },
+    lead(t, m, d, v = .07) { const o = oc.createOscillator(), g = oc.createGain(); o.type = 'triangle'; o.frequency.value = midiF(m); env(g, t, .004, v, d); o.connect(g).connect(out); o.start(t); o.stop(t + d + .05); },
+  };
+}
+const PISTAS_DEF = [
+  { id: 'margarita', nombre: 'Margarita Funk', bpm: 96, swing: .1,
+    chords: [[52, 55, 59, 62], [57, 60, 64, 67], [48, 52, 55, 59], [47, 51, 54, 57]],
+    play(I, t, s, b, ch, st) {
+      const K = b % 2 ? 'x.....x.x.x.....' : 'x.....x...x.....'; if (K[s] === 'x') I.kick(t, .95);
+      if (s === 4 || s === 12) I.snare(t, .5); if (s === 15 && b % 2) I.snare(t, .18);
+      if (s % 2 === 0) I.hat(t, s % 4 === 0 ? .1 : .17); else if (s === 7 || s === 15) I.hat(t, .07);
+      const r = ch[0] - 12, BL = { 0: r, 3: r, 6: r + 12, 8: r + 7, 10: r, 11: r + 10, 14: r + 12 };
+      if (BL[s] !== undefined) I.bass(t, BL[s], st * 1.6, .34);
+      if (s === 2 || s === 7 || s === 10) I.stab(t, ch.map(m => m + 12), .09, .055, 'square', 2800);
+    } },
+  { id: 'pepperoni', nombre: 'Pepperoni Disco', bpm: 118,
+    chords: [[57, 60, 64], [53, 57, 60], [48, 52, 55], [55, 59, 62]],
+    play(I, t, s, b, ch, st) {
+      if (s % 4 === 0) I.kick(t, .95); if (s === 4 || s === 12) I.clap(t, .45);
+      if (s % 4 === 2) I.hat(t, .11, true); else if (s % 2 === 1) I.hat(t, .06);
+      if (s % 2 === 0) I.bass(t, ch[0] - 12 + (s % 4 === 2 ? 12 : 0), st * 1.7, .32);
+      if (s === 0 && b % 2 === 0) I.stab(t, ch.map(m => m + 12), st * 30, .03, 'sawtooth', 1500);
+      if (b >= 4 && s % 2 === 1) I.lead(t, ch[(s >> 1) % 3] + 24, st * .9, .055);
+    } },
+  { id: 'hawaiana', nombre: 'Hawaiana House', bpm: 124,
+    chords: [[53, 57, 60, 64], [50, 53, 57, 60], [46, 50, 53, 57], [48, 52, 55, 60]],
+    play(I, t, s, b, ch, st) {
+      if (s % 4 === 0) I.kick(t, 1); if (s === 4 || s === 12) I.clap(t, .42);
+      if (s % 4 === 2) I.hat(t, .1, true); else I.hat(t, s % 2 ? .07 : .04);
+      if (s % 4 === 2) I.bass(t, ch[0] - 12, st * 1.5, .36);
+      if ([3, 6, 11, 14].includes(s)) I.stab(t, ch.map(m => m + 12), .14, .05, 'sawtooth', 2000);
+    } },
+];
+async function renderPista(def) {
+  const bars = 8, spb = 60 / def.bpm, st = spb / 4, barLen = spb * 4, len = bars * barLen;
+  const oc = new OfflineAudioContext(2, Math.ceil((len + 1.5) * SR), SR);
+  const comp = oc.createDynamicsCompressor(); comp.threshold.value = -14; comp.ratio.value = 4;
+  const out = oc.createGain(); out.gain.value = .55; out.connect(comp); comp.connect(oc.destination);
+  const noise = oc.createBuffer(1, SR, SR); const nd = noise.getChannelData(0); for (let i = 0; i < nd.length; i++) nd[i] = Math.random() * 2 - 1;
+  const I = instrumentos(oc, out, noise);
+  for (let b = 0; b < bars; b++) {
+    const ch = def.chords[Math.floor(b / 2) % def.chords.length];
+    for (let s = 0; s < 16; s++) { let t = b * barLen + s * st; if (def.swing && s % 2) t += st * def.swing; def.play(I, t, s, b, ch, st); }
+  }
+  const buf = await oc.startRendering();
+  const n = Math.round(len * SR); const res = new AudioBuffer({ length: n, numberOfChannels: 2, sampleRate: SR });
+  for (let c = 0; c < 2; c++) { const src = buf.getChannelData(c), dst = res.getChannelData(c); dst.set(src.subarray(0, n)); for (let i = n; i < src.length; i++) dst[i - n] += src[i]; }
+  return res;
+}
+function picos(buffer, bins = 360) {
+  const d = buffer.getChannelData(0), step = Math.floor(d.length / bins), p = new Float32Array(bins); let mx = 0;
+  for (let i = 0; i < bins; i++) { let m = 0; for (let j = i * step; j < (i + 1) * step; j += 16) { const v = Math.abs(d[j]); if (v > m) m = v; } p[i] = m; if (m > mx) mx = m; }
+  if (mx > 0) for (let i = 0; i < bins; i++) p[i] /= mx;
+  return p;
+}
+function estimarBPM(buffer) {
+  const sr = buffer.sampleRate, d = buffer.getChannelData(0), hop = Math.floor(sr / 100), n = Math.min(Math.floor(d.length / hop), 100 * 45);
+  const e = new Float32Array(n); for (let i = 0; i < n; i++) { let s = 0; for (let j = i * hop; j < (i + 1) * hop; j += 4) s += d[j] * d[j]; e[i] = Math.sqrt(s); }
+  const o = new Float32Array(n); for (let i = 1; i < n; i++) o[i] = Math.max(0, e[i] - e[i - 1]);
+  let best = 0, lagB = 50; for (let lag = 33; lag <= 86; lag++) { let s = 0; for (let i = lag; i < n; i++) s += o[i] * o[i - lag]; if (s > best) { best = s; lagB = lag; } }
+  let bpm = 6000 / lagB; while (bpm < 80) bpm *= 2; while (bpm > 165) bpm /= 2; return Math.round(bpm * 10) / 10;
+}
+
+/* =========================================================
+   Audio: motor de mezcla
+   ========================================================= */
+let ctx = null; const BUS = {}; const decks = {}; const PISTAS = []; let pistasListas = null; let subidas = 0;
+class Deck {
+  constructor(id) {
+    this.id = id; this.track = null; this.buffer = null; this.src = null; this.playing = false; this.offset = 0; this.startedAt = 0;
+    this.tempo = 0; this.rateOverride = null; this.loopStart = 0; this.loopEnd = 0; this.cues = [null, null, null, null];
+    this.eq = { low: 0, mid: 0, high: 0 }; this.volumen = id === 'A' ? .9 : .6;
+    this.vol = ctx.createGain(); this.vol.gain.value = this.volumen;
+    this.low = ctx.createBiquadFilter(); this.low.type = 'lowshelf'; this.low.frequency.value = 250;
+    this.mid = ctx.createBiquadFilter(); this.mid.type = 'peaking'; this.mid.frequency.value = 1000; this.mid.Q.value = .9;
+    this.high = ctx.createBiquadFilter(); this.high.type = 'highshelf'; this.high.frequency.value = 3500;
+    this.cue = ctx.createGain();
+    this.vol.connect(this.low).connect(this.mid).connect(this.high).connect(this.cue).connect(BUS.in);
+  }
+  get rate() { return this.rateOverride ?? (1 + this.tempo / 100); }
+  get bpm() { return this.track ? this.track.bpm * (1 + this.tempo / 100) : 0; }
+  get loopOn() { return this.loopEnd > this.loopStart; }
+  wrap(p) { const d = this.buffer.duration; if (this.loopOn && p >= this.loopEnd) p = this.loopStart + ((p - this.loopStart) % (this.loopEnd - this.loopStart)); return ((p % d) + d) % d; }
+  position() { if (!this.buffer) return 0; let p = this.offset; if (this.playing) p += (ctx.currentTime - this.startedAt) * this.rate; return this.wrap(p); }
+  rebase() { if (this.playing) { this.offset = this.position(); this.startedAt = ctx.currentTime; } }
+  _start() {
+    const s = ctx.createBufferSource(); s.buffer = this.buffer; s.loop = true;
+    s.loopStart = this.loopOn ? this.loopStart : 0; s.loopEnd = this.loopOn ? this.loopEnd : 0;
+    s.playbackRate.value = this.rate; s.connect(this.vol); s.start(0, this.offset); this.startedAt = ctx.currentTime; this.src = s;
+  }
+  _stopSrc() { if (this.src) { try { this.src.stop(); } catch {} this.src.disconnect(); this.src = null; } }
+  load(track) { this._stopSrc(); this.playing = false; this.track = track; this.buffer = track.buffer; this.offset = 0; this.loopStart = this.loopEnd = 0; this.cues = [null, null, null, null]; }
+  play() { if (!this.buffer || this.playing) return; ctx.resume(); this._start(); this.playing = true; }
+  pause() { if (!this.playing) return; this.offset = this.position(); this._stopSrc(); this.playing = false; }
+  toggle() { this.playing ? this.pause() : this.play(); }
+  seek(p) { if (!this.buffer) return; const was = this.playing; if (was) { this._stopSrc(); this.playing = false; } this.offset = this.wrap(p); if (was) { this._start(); this.playing = true; } }
+  setTempo(t) { this.rebase(); this.tempo = t; if (this.src) this.src.playbackRate.value = this.rate; }
+  setVol(v) { this.volumen = v; this.vol.gain.setTargetAtTime(v, ctx.currentTime, .02); }
+  setEQ(k, db) { this.eq[k] = db; this[k].gain.setTargetAtTime(db, ctx.currentTime, .02); }
+  setLoop(beats) {
+    if (!this.buffer) return; const bl = 60 / this.track.bpm, p = this.position();
+    const ls = Math.floor(p / bl) * bl, le = Math.min(ls + beats * bl, this.buffer.duration); if (le - ls < .05) return;
+    this.rebase(); this.loopStart = ls; this.loopEnd = le; if (this.src) { this.src.loopStart = ls; this.src.loopEnd = le; }
+  }
+  exitLoop() { this.rebase(); this.loopStart = this.loopEnd = 0; if (this.src) { this.src.loopStart = 0; this.src.loopEnd = 0; } }
+  scratch(dAng, dt) {
+    if (!this.buffer) return; const k = .22, p = this.position() + dAng * k;
+    if (this.playing) { this._stopSrc(); this.offset = this.wrap(p); this.rateOverride = clamp(Math.abs(dAng / Math.max(dt, .016)) * k, .25, 3); this._start(); }
+    else this.offset = this.wrap(p);
+  }
+  endScratch() { this.rebase(); this.rateOverride = null; if (this.src) this.src.playbackRate.value = this.rate; }
+}
+function impulso(seg = 2.4) {
+  const n = Math.floor(ctx.sampleRate * seg), b = ctx.createBuffer(2, n, ctx.sampleRate);
+  for (let c = 0; c < 2; c++) { const d = b.getChannelData(c); for (let i = 0; i < n; i++) d[i] = (Math.random() * 2 - 1) * Math.pow(1 - i / n, 3); }
+  return b;
+}
+function initAudio() {
+  if (ctx) { ctx.resume(); return pistasListas; }
+  ctx = new (window.AudioContext || window.webkitAudioContext)();
+  BUS.in = ctx.createGain();
+  BUS.filtro = ctx.createBiquadFilter(); BUS.filtro.type = 'lowpass'; BUS.filtro.frequency.value = 20000; BUS.filtro.Q.value = .8;
+  BUS.master = ctx.createGain(); BUS.master.gain.value = .9;
+  BUS.analyser = ctx.createAnalyser(); BUS.analyser.fftSize = 1024;
+  BUS.delay = ctx.createDelay(2); BUS.delay.delayTime.value = .375; BUS.fb = ctx.createGain(); BUS.fb.gain.value = .42; BUS.ecoSend = ctx.createGain(); BUS.ecoSend.gain.value = 0;
+  BUS.rev = ctx.createConvolver(); BUS.rev.buffer = impulso(); BUS.revSend = ctx.createGain(); BUS.revSend.gain.value = 0;
+  BUS.in.connect(BUS.filtro); BUS.filtro.connect(BUS.master);
+  BUS.filtro.connect(BUS.ecoSend).connect(BUS.delay); BUS.delay.connect(BUS.fb).connect(BUS.delay); BUS.delay.connect(BUS.master);
+  BUS.filtro.connect(BUS.revSend).connect(BUS.rev).connect(BUS.master);
+  BUS.master.connect(BUS.analyser).connect(ctx.destination);
+  decks.A = new Deck('A'); decks.B = new Deck('B');
+  pistasListas = Promise.all(PISTAS_DEF.map(async d => { const buffer = await renderPista(d); return { id: d.id, nombre: d.nombre, bpm: d.bpm, buffer, peaks: picos(buffer), propia: false }; }))
+    .then(list => { PISTAS.push(...list); return list; });
+  return pistasListas;
+}
+function setFiltro(v) {
+  S.fx.filtro = v; const f = BUS.filtro, t = ctx.currentTime;
+  if (Math.abs(v) < .03) { f.type = 'lowpass'; f.frequency.setTargetAtTime(20000, t, .02); }
+  else if (v < 0) { f.type = 'lowpass'; f.frequency.setTargetAtTime(20000 * Math.pow(200 / 20000, -v), t, .02); }
+  else { f.type = 'highpass'; f.frequency.setTargetAtTime(20 * Math.pow(4000 / 20, v), t, .02); }
+}
+function setEco(v) { S.fx.eco = v; BUS.ecoSend.gain.setTargetAtTime(v * .8, ctx.currentTime, .02); const a = decks.A; if (a.track) BUS.delay.delayTime.value = clamp(.75 * 60 / a.bpm, .05, 1.9); }
+function setRev(v) { S.fx.rev = v; BUS.revSend.gain.setTargetAtTime(v * 1.2, ctx.currentTime, .02); }
+function setMaster(v) { S.master = v; BUS.master.gain.setTargetAtTime(v, ctx.currentTime, .02); }
+function setPreview(on) {
+  S.preview = on; const d = decks[S.deck], o = decks[otro(S.deck)];
+  d.cue.gain.setTargetAtTime(1, ctx.currentTime, .05); o.cue.gain.setTargetAtTime(on ? .12 : 1, ctx.currentTime, .05);
+  if (on && d.track && !d.playing) d.play();
+}
+const otro = id => id === 'A' ? 'B' : 'A';
+function sync(id) {
+  const d = decks[id], o = decks[otro(id)]; if (!d.track || !o.track) return false;
+  d.setTempo(clamp((o.bpm / d.track.bpm - 1) * 100, -30, 30));
+  if (o.playing && d.playing) {
+    const phO = (o.position() * o.track.bpm / 60) % 1, bl = 60 / d.track.bpm, p = d.position(), phD = (p / bl) % 1;
+    let diff = phO - phD; if (diff > .5) diff -= 1; if (diff < -.5) diff += 1; d.seek(p + diff * bl);
+  }
+  return true;
+}
+
+/* =========================================================
+   Estado del juego
+   ========================================================= */
+const S = { added: new Set(), selected: 'salsa', deck: 'A', fx: { eco: 0, rev: 0, filtro: 0 }, master: .9, preview: false };
+
+/* =========================================================
+   Escena 3D
+   ========================================================= */
+const escena = $('#escena');
+const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true, preserveDrawingBuffer: true });
+renderer.setPixelRatio(Math.min(devicePixelRatio, 2));
+renderer.shadowMap.enabled = true; renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+escena.prepend(renderer.domElement);
+const scene = new THREE.Scene();
+/* Medidas reales en metros: pizza de 32 cm, recipientes de 11 cm, tornamesa de 45 cm. */
+const camera = new THREE.PerspectiveCamera(34, 1, .01, 20);
+const TARGET = new THREE.Vector3(0, .03, 0), CAM_DIR = new THREE.Vector3(0, .85, 1.05);
+const controls = new OrbitControls(camera, renderer.domElement);
+controls.target.copy(TARGET); controls.enableDamping = true; controls.enablePan = false;
+controls.minDistance = .45; controls.maxDistance = 3.2; controls.minPolarAngle = .2; controls.maxPolarAngle = 1.2;
+scene.add(new THREE.HemisphereLight(0xfffaf0, 0xc9b99a, 1.6));
+const sol = new THREE.DirectionalLight(0xfff8ee, 2.2); sol.position.set(.7, 1.5, .9); sol.castShadow = true;
+Object.assign(sol.shadow.camera, { left: -1, right: 1, top: 1, bottom: -1, near: .1, far: 4 }); sol.shadow.mapSize.set(2048, 2048); sol.shadow.radius = 3; sol.shadow.bias = -.0004;
+scene.add(sol);
+
+/* ---------- estilo ilustrado: sombreado plano + contorno de tinta azul ---------- */
+const TINTA = new THREE.Color('#2C4C9A');
+const rampa = new THREE.DataTexture(new Uint8Array([105, 175, 225, 255]), 4, 1, THREE.RedFormat);
+rampa.minFilter = rampa.magFilter = THREE.NearestFilter; rampa.needsUpdate = true;
+const toonCache = new Map();
+function aToon(m) {
+  if (toonCache.has(m)) return toonCache.get(m);
+  const c = m.color ? m.color.clone() : new THREE.Color(1, 1, 1);
+  if (m.metalness > .5) c.set('#D3D9E2');
+  const t = new THREE.MeshToonMaterial({ color: c, gradientMap: rampa, side: THREE.DoubleSide, map: m.map || null });
+  t.name = m.name; toonCache.set(m, t); return t;
+}
+const contornoMat = (ancho) => new THREE.ShaderMaterial({
+  uniforms: { uColor: { value: TINTA }, uAncho: { value: ancho }, uRes: { value: new THREE.Vector2(1, 1) } },
+  vertexShader: `uniform float uAncho; uniform vec2 uRes;
+    void main() {
+      vec4 clip = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
+      vec3 n = normalize(normalMatrix * normal);
+      vec4 nClip = projectionMatrix * vec4(n, 0.0);
+      vec2 dir = normalize(nClip.xy + vec2(1e-5));
+      clip.xy += dir * uAncho * 2.0 / uRes * clip.w;
+      gl_Position = clip;
+    }`,
+  fragmentShader: `uniform vec3 uColor;
+    void main() {
+      gl_FragColor = vec4(uColor, 1.0);
+      #include <colorspace_fragment>
+    }`,
+  side: THREE.BackSide,
+});
+const contornos = [];
+function ponerContorno(mesh, ancho) {
+  let g = mesh.geometry.clone();
+  for (const k of Object.keys(g.attributes)) if (k !== 'position') g.deleteAttribute(k);
+  g = mergeVertices(g, 1e-4); g.computeVertexNormals();
+  const mat = contornoMat(ancho); contornos.push(mat);
+  const o = new THREE.Mesh(g, mat); o.raycast = () => {}; mesh.add(o);
+}
+function texturaMantel() {
+  const c = document.createElement('canvas'); c.width = c.height = 256; const g = c.getContext('2d');
+  g.fillStyle = '#FCF1DC'; g.fillRect(0, 0, 256, 256);
+  g.fillStyle = 'rgba(44,76,154,.3)'; g.fillRect(0, 0, 128, 256); g.fillRect(0, 0, 256, 128);
+  for (let i = 0; i < 900; i++) { g.fillStyle = `rgba(120,90,50,${Math.random() * .08})`; g.fillRect(Math.random() * 256, Math.random() * 256, 2, 2); }
+  const t = new THREE.CanvasTexture(c); t.colorSpace = THREE.SRGBColorSpace; t.wrapS = t.wrapT = THREE.RepeatWrapping;
+  t.repeat.set(1.7 / .04, 1.0 / .04); t.anisotropy = 8; return t;
+}
+
+const N = { bowls: {}, tops: {}, base: new Map() }; const anims = [];
+let modeloListo = false;
+function cargarModelo(onLoad, onError) {
+  try {
+    const bin = atob(window.PIZZA_GLB), buf = new Uint8Array(bin.length);
+    for (let i = 0; i < bin.length; i++) buf[i] = bin.charCodeAt(i);
+    new GLTFLoader().parse(buf.buffer, '', onLoad, onError);
+  } catch (e) { onError(e); }
+}
+cargarModelo(g => {
+  const root = g.scene; scene.add(root);
+  const mallas = []; root.traverse(o => { if (o.isMesh) mallas.push(o); });
+  for (const o of mallas) {
+    const top = o.name.startsWith('Mantel') ? 'Mantel' : (o.parent?.name?.startsWith('Mantel') ? 'Mantel' : null);
+    o.material = Array.isArray(o.material) ? o.material.map(aToon) : aToon(o.material);
+    o.castShadow = true; o.receiveShadow = true;
+    let nombre = o.name, p = o; while (p && !/^(Pizza_|Recipiente_|Masa_|Bandeja|Tornamesa|Controles_|Mantel)/.test(p.name)) p = p.parent; if (p) nombre = p.name;
+    if (nombre === 'Mantel') {
+      const pos = o.geometry.attributes.position, uv = new Float32Array(pos.count * 2);
+      for (let i = 0; i < pos.count; i++) { uv[i * 2] = pos.getX(i) / 1.7 + .5; uv[i * 2 + 1] = pos.getZ(i) / 1.0 + .5; }
+      o.geometry.setAttribute('uv', new THREE.BufferAttribute(uv, 2));
+      o.material = new THREE.MeshToonMaterial({ map: texturaMantel(), gradientMap: rampa }); o.castShadow = false; continue;
+    }
+    if (nombre === 'Pizza_Oregano') continue;
+    ponerContorno(o, /^Pizza_(Maiz|Aceitunas|Jalapeno|Pina|Albahaca)/.test(nombre) ? .8 : /^Pizza_/.test(nombre) ? 1.0 : 1.4);
+  }
+  for (const ing of ING) {
+    const b = root.getObjectByName('Recipiente_' + ing.nodo); if (b) { N.bowls[ing.id] = b; N.base.set(b, b.position.y); b.userData.ing = ing.id; }
+    const t = root.getObjectByName('Pizza_' + ing.nodo); if (t) { N.tops[ing.id] = t; N.base.set(t, t.position.y); t.userData.ing = ing.id; t.visible = S.added.has(ing.id); }
+  }
+  N.masa = root.getObjectByName('Masa_Pizza'); N.bandeja = root.getObjectByName('Bandeja');
+  N.pizza = root.getObjectByName('Pizza_Interactiva') || N.masa; N.disco = root.getObjectByName('Tornamesa_Disco'); N.dj = root.getObjectByName('Personaje_DJ');
+  N.masaMats = []; N.masa?.traverse(o => { if (o.isMesh) N.masaMats.push(o.material); });
+  if (N.dj) N.djBase = N.dj.scale.y;
+  $('#cargando').hidden = true; modeloListo = true; resize();
+}, () => { $('#cargando').textContent = 'No se pudo cargar el modelo 3D'; });
+
+function resize() {
+  const w = escena.clientWidth, h = escena.clientHeight; if (!w || !h) return;
+  renderer.setSize(w, h, false); camera.aspect = w / h; camera.updateProjectionMatrix();
+  const k = clamp(1.78 / camera.aspect, .75, 2.9);
+  camera.position.copy(TARGET).add(CAM_DIR.clone().multiplyScalar(k)); controls.update();
+  const px = renderer.getDrawingBufferSize(new THREE.Vector2()); contornos.forEach(m => m.uniforms.uRes.value.copy(px));
+}
+new ResizeObserver(resize).observe(escena);
+
+const ray = new THREE.Raycaster(), ptr = new THREE.Vector2();
+function hitObjects(x, y, objs) {
+  const r = renderer.domElement.getBoundingClientRect(); ptr.set(((x - r.left) / r.width) * 2 - 1, -((y - r.top) / r.height) * 2 + 1);
+  ray.setFromCamera(ptr, camera); return ray.intersectObjects(objs, true);
+}
+function ingDe(obj) { while (obj) { if (obj.userData.ing) return obj.userData.ing; obj = obj.parent; } return null; }
+function sobrePizza(x, y) {
+  const r = renderer.domElement.getBoundingClientRect(); if (x < r.left || x > r.right || y < r.top || y > r.bottom) return false;
+  ptr.set(((x - r.left) / r.width) * 2 - 1, -((y - r.top) / r.height) * 2 + 1); ray.setFromCamera(ptr, camera);
+  const p = new THREE.Vector3(); if (!ray.ray.intersectPlane(new THREE.Plane(new THREE.Vector3(0, 1, 0), -.015), p)) return false;
+  return Math.hypot(p.x, p.z) < .2;
+}
+function soltar(id, animar = true) {
+  const t = N.tops[id]; if (!t) return; t.visible = true;
+  if (animar) anims.push({ obj: t, t0: performance.now(), dur: 650, base: N.base.get(t) }); else { t.position.y = N.base.get(t); t.scale.setScalar(1); }
+}
+
+/* ---------- arrastrar ingredientes ---------- */
+let cand = null, arrastrando = false, hoverBowl = null, suprimirClick = false, downCanvas = null;
+const ghost = document.createElement('div'); ghost.className = 'ghost'; ghost.innerHTML = '<span class="bowl"></span>'; ghost.hidden = true; document.body.append(ghost);
+function empezarCand(id, e) { cand = { id, x: e.clientX, y: e.clientY }; arrastrando = false; }
+renderer.domElement.addEventListener('pointerdown', e => {
+  downCanvas = { x: e.clientX, y: e.clientY };
+  if (!modeloListo) return;
+  const h = hitObjects(e.clientX, e.clientY, Object.values(N.bowls))[0];
+  if (h) { controls.enabled = false; empezarCand(ingDe(h.object), e); }
+}, { capture: true });
+window.addEventListener('pointermove', e => {
+  if (cand) {
+    if (!arrastrando && Math.hypot(e.clientX - cand.x, e.clientY - cand.y) > 7) {
+      arrastrando = true; ghost.hidden = false; ghost.style.setProperty('--c', BY[cand.id].color); seleccionar(cand.id);
+    }
+    if (arrastrando) {
+      ghost.style.left = e.clientX + 'px'; ghost.style.top = e.clientY + 'px';
+      const on = sobrePizza(e.clientX, e.clientY); N.masaMats?.forEach(m => { m.emissive?.setHex(on ? 0x6b4a00 : 0x000000); });
+    }
+    return;
+  }
+  if (!modeloListo || e.target !== renderer.domElement) { if (hoverBowl) hoverBowl = null; return; }
+  const h = hitObjects(e.clientX, e.clientY, [...Object.values(N.bowls), ...Object.values(N.tops).filter(t => t.visible)])[0];
+  const id = h ? ingDe(h.object) : null; hoverBowl = id && N.bowls[id] && h.object && isBowl(h.object) ? id : null;
+  renderer.domElement.style.cursor = id ? 'pointer' : 'grab';
+});
+function isBowl(o) { while (o) { if (o.name?.startsWith('Recipiente_')) return true; o = o.parent; } return false; }
+window.addEventListener('pointerup', e => {
+  if (cand) {
+    const id = cand.id;
+    if (arrastrando) {
+      suprimirClick = true; setTimeout(() => suprimirClick = false, 0);
+      if (sobrePizza(e.clientX, e.clientY)) agregar(id); else toast('Suelta el ingrediente sobre la masa');
+    } else if (e.target === renderer.domElement) seleccionar(id);
+    cand = null; arrastrando = false; ghost.hidden = true; controls.enabled = true; N.masaMats?.forEach(m => m.emissive?.setHex(0));
+    downCanvas = null; return;
+  }
+  if (downCanvas && e.target === renderer.domElement && Math.hypot(e.clientX - downCanvas.x, e.clientY - downCanvas.y) < 5 && modeloListo) {
+    const h = hitObjects(e.clientX, e.clientY, Object.values(N.tops).filter(t => t.visible))[0]; if (h) seleccionar(ingDe(h.object));
+  }
+  downCanvas = null;
+});
+window.addEventListener('pointercancel', () => { cand = null; arrastrando = false; ghost.hidden = true; controls.enabled = true; });
+
+/* =========================================================
+   Lista de ingredientes y panel
+   ========================================================= */
+const lista = $('#lista');
+lista.innerHTML = ING.map(i => `<button class="card" data-ing="${i.id}" style="--c:${i.color}"><span class="bowl"></span><span><b>${i.nombre}</b><small>${i.fn}</small></span><span class="estado">—</span></button>`).join('');
+lista.querySelectorAll('.card').forEach(c => {
+  c.addEventListener('pointerdown', e => { if (e.button === 0) empezarCand(c.dataset.ing, e); });
+  c.addEventListener('click', () => { if (!suprimirClick) seleccionar(c.dataset.ing); });
+});
+$('#tabla-ing').innerHTML = ING.map(i => `<tr><td>${i.nombre}</td><td>${i.fn}</td><td>${i.desc}</td></tr>`).join('');
+
+function seleccionar(id) { if (!id) return; S.selected = id; refrescarLista(); renderPanel(); }
+function refrescarLista() {
+  lista.querySelectorAll('.card').forEach(c => {
+    const id = c.dataset.ing; c.setAttribute('aria-current', id === S.selected ? 'true' : 'false');
+    c.classList.toggle('added', S.added.has(id)); c.querySelector('.estado').textContent = S.added.has(id) ? 'ACTIVO' : '—';
+  });
+  const p = $('#pista');
+  if (!S.added.has('salsa')) p.textContent = 'Arrastra la Salsa a la masa para elegir canciones';
+  else if (!S.added.has('aceitunas')) p.textContent = 'Ahora agrega Aceitunas para darle play';
+  else if (S.added.size < 5) p.textContent = 'Sigue agregando ingredientes: cada uno enciende una función';
+  else p.textContent = `${S.added.size} de 12 ingredientes en tu pizza`;
+}
+async function agregar(id, silencioso = false) {
+  if (S.added.has(id)) { seleccionar(id); return; }
+  S.added.add(id); soltar(id, !silencioso);
+  if (id === 'salsa') { await pistasListas; if (!decks.A.track) decks.A.load(PISTAS[0]); if (!decks.B.track) decks.B.load(PISTAS[1]); }
+  if (!silencioso) toast(`${BY[id].nombre} activó ${BY[id].fn}`);
+  S.selected = id; refrescarLista(); renderPanel();
+}
+function quitar(id) { S.added.delete(id); if (N.tops[id]) N.tops[id].visible = false; if (id === 'anchoas' && S.preview) setPreview(false); refrescarLista(); renderPanel(); }
+
+const panel = $('#panel');
+const deckSeg = () => `<div class="seg" role="group" aria-label="Plato"><button data-deck="A" aria-pressed="${S.deck === 'A'}">Plato A</button><button data-deck="B" aria-pressed="${S.deck === 'B'}">Plato B</button></div>`;
+const rango = (id, label, min, max, step, val, out) => `<div class="campo"><label for="${id}">${label}<output id="${id}-o">${out}</output></label><input type="range" id="${id}" min="${min}" max="${max}" step="${step}" value="${val}"></div>`;
+const db = v => (v > 0 ? '+' : '') + (+v).toFixed(1) + ' dB';
+const pct = v => Math.round(v * 100) + '%';
+function sinCancion(d) { return d.track ? '' : `<p class="aviso">El plato ${d.id} no tiene canción. Agrega Salsa y elige una.</p>`; }
+
+function controles(fn) {
+  const d = decks[S.deck];
+  switch (fn) {
+    case 'TRACKS': return `<div class="tracklist">${PISTAS.map(t => `<div class="track"><div><b>${esc(t.nombre)}</b><small>${t.propia ? 'Tu archivo' : 'Incluida'} · ${Math.round(t.bpm)} BPM · ${fmt(t.buffer.duration)}</small></div>
+        <div class="track-btns">${['A', 'B'].map(k => `<button class="mini ${decks[k].track === t ? 'on' : ''}" data-cargar="${t.id}" data-plato="${k}" aria-label="Cargar ${esc(t.nombre)} en el plato ${k}">${k}</button>`).join('')}</div></div>`).join('') || '<p class="nota">Preparando pistas…</p>'}</div>
+      <label class="btn btn-azul" for="subir" style="text-align:center">Subir canción desde tu computador<input type="file" id="subir" accept="audio/*" hidden></label>
+      <p class="nota">MP3, WAV, OGG o M4A. El archivo no sale de tu navegador.</p>`;
+    case 'EQ': return deckSeg() + sinCancion(d) + rango('eq-low', 'Bajos', -24, 6, .5, d.eq.low, db(d.eq.low)) + rango('eq-mid', 'Medios', -24, 6, .5, d.eq.mid, db(d.eq.mid)) + rango('eq-high', 'Agudos', -24, 6, .5, d.eq.high, db(d.eq.high)) + `<button class="link" data-act="eq-reset">Dejar el EQ plano</button>`;
+    case 'JOG WHEEL': return deckSeg() + sinCancion(d) + `<canvas id="jog" width="400" height="400" aria-label="Disco del plato ${d.id}: arrastra en círculo"></canvas><p class="nota" style="text-align:center">Arrastra en círculo sobre el pepperoni.</p>`;
+    case 'VOLUMEN': return rango('vol-A', 'Plato A', 0, 1.2, .01, decks.A.volumen, pct(decks.A.volumen)) + rango('vol-B', 'Plato B', 0, 1.2, .01, decks.B.volumen, pct(decks.B.volumen));
+    case 'EFECTOS': return rango('fx-eco', 'Eco', 0, 1, .01, S.fx.eco, pct(S.fx.eco)) + rango('fx-rev', 'Reverb', 0, 1, .01, S.fx.rev, pct(S.fx.rev)) + rango('fx-filtro', 'Filtro (← graves · agudos →)', -1, 1, .01, S.fx.filtro, filtroTxt(S.fx.filtro)) + `<button class="link" data-act="fx-reset">Quitar todos los efectos</button>`;
+    case 'HOT CUES': return deckSeg() + sinCancion(d) + `<div class="pads">${d.cues.map((c, i) => `<button class="pad ${c != null ? 'set' : ''}" data-cue="${i}" ${d.track ? '' : 'disabled'}>${c != null ? `Saltar a ${i + 1}<small>${fmt(c)}</small>` : `Marcar ${i + 1}<small>vacío</small>`}</button>`).join('')}</div><button class="link" data-act="cues-reset">Borrar los cues del plato ${d.id}</button>`;
+    case 'PLAY / PAUSE': return `<div class="plays">${['A', 'B'].map(k => `<button class="play ${decks[k].playing ? 'on' : ''}" data-play="${k}" ${decks[k].track ? '' : 'disabled'}><span class="olive"></span>${decks[k].playing ? 'Pausar' : 'Play'} ${k}</button>`).join('')}</div>${decks.A.track ? '' : '<p class="aviso">Primero agrega Salsa para cargar canciones.</p>'}`;
+    case 'LOOP': return deckSeg() + sinCancion(d) + `<div class="fila">${[[4, '1 compás'], [8, '2 compases'], [16, '4 compases']].map(([b, l]) => `<button class="btn btn-amarillo" data-loop="${b}" ${d.track ? '' : 'disabled'}>${l}</button>`).join('')}</div>
+      <p class="estado-linea">${d.loopOn ? `Repitiendo ${fmt(d.loopStart)} – ${fmt(d.loopEnd)}` : 'Sin loop'}</p>${d.loopOn ? '<button class="btn" data-act="loop-off">Salir del loop</button>' : ''}`;
+    case 'SYNC': { const o = decks[otro(S.deck)]; return deckSeg() + `<p class="estado-linea">Plato ${d.id}: ${d.track ? d.bpm.toFixed(1) : '—'} BPM · Plato ${o.id}: ${o.track ? o.bpm.toFixed(1) : '—'} BPM</p>
+      <button class="btn btn-azul" data-act="sync" ${d.track && o.track ? '' : 'disabled'}>Sincronizar plato ${d.id} con plato ${o.id}</button>`; }
+    case 'TEMPO': return deckSeg() + sinCancion(d) + rango('tempo', 'Velocidad', -30, 30, .1, d.tempo, tempoTxt(d)) + `<button class="link" data-act="tempo-reset">Volver a la velocidad original</button>`;
+    case 'MASTER': return rango('master', 'Volumen general', 0, 1.2, .01, S.master, pct(S.master)) + `<div class="meter" aria-hidden="true"><i id="meter"></i></div>`;
+    case 'CUE': return deckSeg() + sinCancion(d) + `<button class="btn ${S.preview ? 'btn-rojo' : 'btn-amarillo'}" data-act="preview" ${d.track ? '' : 'disabled'}>${S.preview ? 'Dejar de pre-escuchar' : `Pre-escuchar plato ${d.id}`}</button>
+      <button class="btn btn-azul" data-act="incorporar" ${d.track ? '' : 'disabled'}>Incorporar plato ${d.id} a la mezcla</button>`;
+  }
+  return '';
+}
+const filtroTxt = v => Math.abs(v) < .03 ? 'abierto' : v < 0 ? 'corta agudos' : 'corta graves';
+const tempoTxt = d => `${d.tempo > 0 ? '+' : ''}${(+d.tempo).toFixed(1)}%${d.track ? ' · ' + d.bpm.toFixed(1) + ' BPM' : ''}`;
+
+function renderPanel() {
+  const ing = BY[S.selected], on = S.added.has(ing.id);
+  panel.innerHTML = `<div class="ing-head" style="--c:${ing.color}"><span class="bowl"></span><div><h2>${ing.nombre}</h2><span class="fn">${ing.fn}</span></div></div>
+    <p class="desc">${ing.desc}.</p><p class="ayuda">${ing.ayuda}</p>
+    ${on ? `<div class="bloque">${ctx ? controles(ing.fn) : ''}</div><button class="link" data-act="quitar">Quitar ${ing.nombre.toLowerCase()} de la pizza</button>`
+         : `<div class="bloque apagado"><p>Esta función está apagada. Arrastra el recipiente a la masa o usa el botón.</p><button class="btn btn-rojo" data-act="agregar">Agregar a la pizza</button></div>`}`;
+  bindPanel();
+}
+function bindPanel() {
+  const d = decks[S.deck];
+  panel.querySelectorAll('[data-deck]').forEach(b => b.onclick = () => { S.deck = b.dataset.deck; if (S.preview) setPreview(false); renderPanel(); });
+  panel.querySelectorAll('[data-cargar]').forEach(b => b.onclick = () => {
+    const t = PISTAS.find(p => p.id === b.dataset.cargar), k = b.dataset.plato, was = decks[k].playing; decks[k].load(t); if (was) decks[k].play();
+    toast(`${t.nombre} en el plato ${k}`); renderPanel();
+  });
+  const up = panel.querySelector('#subir'); if (up) up.onchange = async () => {
+    const f = up.files[0]; if (!f) return; toast('Leyendo ' + f.name + '…');
+    try {
+      const buffer = await ctx.decodeAudioData(await f.arrayBuffer());
+      const t = { id: 'propia-' + (++subidas), nombre: f.name.replace(/\.[^.]+$/, ''), bpm: estimarBPM(buffer), buffer, peaks: picos(buffer), propia: true };
+      PISTAS.push(t); decks[S.deck].load(t); toast(`${t.nombre} cargada en el plato ${S.deck}`); renderPanel();
+    } catch { toast('No se pudo leer ese archivo. Prueba con un MP3 o WAV.'); }
+  };
+  const r = (id, fn, out) => { const el = panel.querySelector('#' + id); if (el) el.oninput = () => { fn(+el.value); panel.querySelector('#' + id + '-o').textContent = out(+el.value); }; };
+  r('eq-low', v => d.setEQ('low', v), db); r('eq-mid', v => d.setEQ('mid', v), db); r('eq-high', v => d.setEQ('high', v), db);
+  r('vol-A', v => decks.A.setVol(v), pct); r('vol-B', v => decks.B.setVol(v), pct);
+  r('fx-eco', setEco, pct); r('fx-rev', setRev, pct); r('fx-filtro', setFiltro, filtroTxt);
+  r('tempo', v => d.setTempo(v), () => tempoTxt(d)); r('master', setMaster, pct);
+  panel.querySelectorAll('[data-cue]').forEach(b => b.onclick = () => { const i = +b.dataset.cue; if (d.cues[i] == null) { d.cues[i] = d.position(); toast(`Cue ${i + 1} marcado en ${fmt(d.cues[i])}`); } else d.seek(d.cues[i]); renderPanel(); });
+  panel.querySelectorAll('[data-play]').forEach(b => b.onclick = () => { decks[b.dataset.play].toggle(); renderPanel(); });
+  panel.querySelectorAll('[data-loop]').forEach(b => b.onclick = () => { d.setLoop(+b.dataset.loop); renderPanel(); });
+  panel.querySelectorAll('[data-act]').forEach(b => b.onclick = () => {
+    const a = b.dataset.act;
+    if (a === 'agregar') agregar(S.selected);
+    else if (a === 'quitar') quitar(S.selected);
+    else if (a === 'eq-reset') { ['low', 'mid', 'high'].forEach(k => d.setEQ(k, 0)); renderPanel(); }
+    else if (a === 'fx-reset') { setEco(0); setRev(0); setFiltro(0); renderPanel(); }
+    else if (a === 'cues-reset') { d.cues = [null, null, null, null]; renderPanel(); }
+    else if (a === 'loop-off') { d.exitLoop(); renderPanel(); }
+    else if (a === 'sync') { if (sync(S.deck)) toast(`Plato ${S.deck} sincronizado a ${d.bpm.toFixed(1)} BPM`); renderPanel(); }
+    else if (a === 'tempo-reset') { d.setTempo(0); renderPanel(); }
+    else if (a === 'preview') { setPreview(!S.preview); renderPanel(); }
+    else if (a === 'incorporar') { setPreview(false); d.setVol(1); if (!d.playing) d.play(); toast(`Plato ${d.id} entró a la mezcla`); renderPanel(); }
+  });
+  const jog = panel.querySelector('#jog'); if (jog) bindJog(jog);
+}
+let jogState = null;
+function bindJog(c) {
+  const ang = e => { const r = c.getBoundingClientRect(); return Math.atan2(e.clientY - (r.top + r.height / 2), e.clientX - (r.left + r.width / 2)); };
+  c.onpointerdown = e => { c.setPointerCapture(e.pointerId); jogState = { last: ang(e), acc: 0, t: performance.now() }; c.style.cursor = 'grabbing'; };
+  c.onpointermove = e => {
+    if (!jogState) return; const a = ang(e); let da = a - jogState.last; if (da > Math.PI) da -= 2 * Math.PI; if (da < -Math.PI) da += 2 * Math.PI;
+    jogState.acc += da; jogState.last = a; const now = performance.now();
+    if (now - jogState.t > 35) { decks[S.deck].scratch(jogState.acc, (now - jogState.t) / 1000); jogState.acc = 0; jogState.t = now; }
+  };
+  const fin = () => { if (!jogState) return; jogState = null; decks[S.deck].endScratch(); c.style.cursor = 'grab'; };
+  c.onpointerup = fin; c.onpointercancel = fin;
+}
+function dibujarJog(c) {
+  const g = c.getContext('2d'), w = c.width, d = decks[S.deck], a = d.buffer ? d.position() * Math.PI * 2 * .55 : 0;
+  g.clearRect(0, 0, w, w); g.save(); g.translate(w / 2, w / 2);
+  g.fillStyle = '#2C4C9A'; g.beginPath(); g.arc(0, 0, w / 2 - 2, 0, Math.PI * 2); g.fill();
+  g.rotate(a);
+  g.fillStyle = '#A8322A'; g.beginPath(); g.arc(0, 0, w / 2 - 16, 0, Math.PI * 2); g.fill();
+  g.fillStyle = '#7d211b'; [[.35, .2, 22], [-.3, .38, 16], [.05, -.42, 19], [-.45, -.15, 13], [.48, -.3, 12], [.15, .55, 11], [-.12, .12, 9]].forEach(([x, y, r]) => { g.beginPath(); g.arc(x * w / 2, y * w / 2, r, 0, Math.PI * 2); g.fill(); });
+  g.strokeStyle = '#F5B82E'; g.lineWidth = 10; g.lineCap = 'round'; g.beginPath(); g.moveTo(0, -w * .12); g.lineTo(0, -w / 2 + 26); g.stroke();
+  g.restore();
+  g.fillStyle = '#FBF4E2'; g.beginPath(); g.arc(w / 2, w / 2, w * .08, 0, Math.PI * 2); g.fill();
+}
+
+/* =========================================================
+   Platos (abajo): formas de onda
+   ========================================================= */
+['A', 'B'].forEach(k => $('#wave-' + k).addEventListener('click', e => {
+  const d = decks[k]; if (!d?.buffer) return; const r = e.currentTarget.getBoundingClientRect(); d.seek((e.clientX - r.left) / r.width * d.buffer.duration);
+}));
+function dibujarPlato(k) {
+  const c = $('#wave-' + k), d = decks[k], dpr = Math.min(devicePixelRatio, 2), w = Math.round(c.clientWidth * dpr), h = Math.round(c.clientHeight * dpr);
+  if (!w) return; if (c.width !== w || c.height !== h) { c.width = w; c.height = h; }
+  const g = c.getContext('2d'); g.clearRect(0, 0, w, h);
+  $('#name-' + k).textContent = d?.track ? (d.playing ? '▶ ' : '❚❚ ') + d.track.nombre : 'Sin canción';
+  $('#bpm-' + k).textContent = d?.track ? d.bpm.toFixed(1) + ' BPM' : '— BPM';
+  if (!d?.buffer) { $('#time-' + k).textContent = '0:00'; return; }
+  const dur = d.buffer.duration, pos = d.position(), x = p => p / dur * w;
+  $('#time-' + k).textContent = fmt(pos) + ' / ' + fmt(dur);
+  if (d.loopOn) { g.fillStyle = 'rgba(245,184,46,.28)'; g.fillRect(x(d.loopStart), 0, x(d.loopEnd) - x(d.loopStart), h); }
+  const p = d.track.peaks, bw = w / p.length;
+  for (let i = 0; i < p.length; i++) { const bh = Math.max(1.5 * dpr, p[i] * h * .9); g.fillStyle = i * bw < x(pos) ? (k === 'A' ? '#F5B82E' : '#E86A5E') : 'rgba(251,244,226,.45)'; g.fillRect(i * bw, (h - bh) / 2, Math.max(1, bw - dpr), bh); }
+  d.cues.forEach((cu, i) => { if (cu == null) return; g.fillStyle = '#7fd17f'; g.fillRect(x(cu) - dpr, 0, 2 * dpr, h); g.font = `${10 * dpr}px Archivo, sans-serif`; g.fillText(i + 1, x(cu) + 3 * dpr, 11 * dpr); });
+  g.fillStyle = '#FBF4E2'; g.fillRect(x(pos) - dpr, 0, 2 * dpr, h);
+}
+
+/* =========================================================
+   Bucle principal
+   ========================================================= */
+const reloj = new THREE.Clock(); const tmp = new Float32Array(1024); const djMini = $('#dj-mini');
+function frame() {
+  const dt = Math.min(reloj.getDelta(), .05), now = performance.now();
+  for (let i = anims.length - 1; i >= 0; i--) {
+    const a = anims[i], t = clamp((now - a.t0) / a.dur, 0, 1), e = 1 - Math.pow(1 - t, 3), bounce = Math.sin(t * Math.PI) * .008 * (1 - t);
+    a.obj.position.y = a.base + (1 - e) * .1 + bounce; a.obj.scale.setScalar(.8 + .2 * e); if (t >= 1) { a.obj.position.y = a.base; a.obj.scale.setScalar(1); anims.splice(i, 1); }
+  }
+  for (const [id, b] of Object.entries(N.bowls)) {
+    const goal = N.base.get(b) + (id === S.selected ? .022 : id === hoverBowl ? .01 : 0) + (cand?.id === id && arrastrando ? .035 : 0);
+    b.position.y += (goal - b.position.y) * Math.min(1, dt * 12);
+  }
+  const A = decks.A, B = decks.B, sonando = ctx && (A?.playing || B?.playing);
+  if (N.disco && A?.buffer) N.disco.rotation.y = -A.position() * Math.PI * 2 * .55;
+  if (sonando && N.pizza) N.pizza.rotation.y += dt * .18;
+  {
+    const d = A?.playing ? A : B?.playing ? B : null;
+    const ph = d ? (d.position() * d.track.bpm / 60) % 1 : 0, k = d ? Math.pow(1 - ph, 3) : 0;
+    djMini.style.transform = d ? `translateY(${-6 * k}px) rotate(${Math.sin(now / 600) * 4}deg) scale(${1 + .04 * k})` : '';
+  }
+  controls.update(); renderer.render(scene, camera);
+  if (ctx) {
+    dibujarPlato('A'); dibujarPlato('B');
+    const jog = panel.querySelector('#jog'); if (jog) dibujarJog(jog);
+    const m = document.getElementById('meter');
+    if (m) { BUS.analyser.getFloatTimeDomainData(tmp); let s = 0; for (const v of tmp) s += v * v; m.style.width = clamp(Math.sqrt(s / tmp.length) * 320, 0, 100) + '%'; }
+  }
+  requestAnimationFrame(frame);
+}
+requestAnimationFrame(frame);
+
+/* =========================================================
+   Pantallas: inicio, modalidad, mixes, terminar
+   ========================================================= */
+const inicio = $('#inicio');
+function mostrarInicio() { inicio.hidden = false; }
+function reiniciar() {
+  S.added.clear(); Object.values(N.tops).forEach(t => t.visible = false); S.selected = 'salsa'; S.deck = 'A';
+  if (ctx) {
+    ['A', 'B'].forEach(k => { const d = decks[k]; d.pause(); d.track = null; d.buffer = null; d.offset = 0; d.tempo = 0; d.loopStart = d.loopEnd = 0; d.cues = [null, null, null, null]; ['low', 'mid', 'high'].forEach(e => d.setEQ(e, 0)); d.setVol(k === 'A' ? .9 : .6); });
+    setEco(0); setRev(0); setFiltro(0); setMaster(.9); setPreview(false);
+  }
+  refrescarLista(); renderPanel();
+}
+async function empezarIndividual() {
+  const p = initAudio(); inicio.hidden = true; document.querySelectorAll('dialog[open]').forEach(d => d.close());
+  reiniciar(); toast('Horneando las pistas…'); await p; renderPanel(); toast('¡Listo! Arrastra la Salsa a la masa');
+}
+$('#iniciar').onclick = empezarIndividual;
+$('#multi').onclick = () => $('#dlg-multi').showModal();
+$('#multi-individual').onclick = empezarIndividual;
+$('#ir-inicio').onclick = mostrarInicio;
+$('#abrir-ayuda').onclick = $('#abrir-ayuda-2').onclick = () => $('#dlg-ayuda').showModal();
+$('#abrir-mixes').onclick = $('#abrir-mixes-top').onclick = () => { renderMixes(); $('#dlg-mixes').showModal(); };
+document.querySelectorAll('[data-cerrar]').forEach(b => b.onclick = () => b.closest('dialog').close());
+
+function foto() {
+  renderer.render(scene, camera); const src = renderer.domElement, c = document.createElement('canvas'), w = 360;
+  c.width = w; c.height = Math.round(w * src.height / src.width); const g = c.getContext('2d');
+  g.fillStyle = '#F2E6C9'; g.fillRect(0, 0, c.width, c.height); g.drawImage(src, 0, 0, c.width, c.height); return c.toDataURL('image/jpeg', .72);
+}
+const chips = ids => ids.map(id => `<span class="chip" style="--c:${BY[id].color}"><i></i>${BY[id].nombre}</span>`).join('');
+let fotoActual = '';
+$('#terminar').onclick = () => {
+  if (!S.added.size) { toast('Tu pizza está vacía: agrega al menos un ingrediente'); return; }
+  fotoActual = foto(); $('#foto').src = fotoActual; $('#resumen').innerHTML = chips([...S.added]);
+  $('#resumen-platos').textContent = ['A', 'B'].map(k => `Plato ${k}: ${decks[k]?.track ? decks[k].track.nombre + ' a ' + decks[k].bpm.toFixed(1) + ' BPM' : 'sin canción'}`).join(' · ');
+  $('#dlg-terminar').showModal(); $('#nombre-mix').focus();
+};
+$('#guardar').onclick = () => {
+  const nombre = $('#nombre-mix').value.trim() || 'Mix sin nombre';
+  const mix = { id: Date.now().toString(36), nombre, fecha: new Date().toISOString(), foto: fotoActual, ingredientes: [...S.added], fx: { ...S.fx }, master: S.master,
+    platos: Object.fromEntries(['A', 'B'].map(k => { const d = decks[k]; return [k, d?.track ? { pista: d.track.id, nombre: d.track.nombre, propia: d.track.propia, tempo: d.tempo, volumen: d.volumen, eq: { ...d.eq }, cues: [...d.cues] } : null]; })) };
+  const all = store.get(); all.unshift(mix);
+  if (!store.set(all.slice(0, 30))) { toast('Este navegador no permite guardar. Prueba fuera del modo incógnito.'); return; }
+  $('#dlg-terminar').close(); $('#nombre-mix').value = ''; toast(`«${nombre}» guardado en Tus mixes`);
+};
+function renderMixes() {
+  const all = store.get(), box = $('#mixes');
+  if (!all.length) { box.innerHTML = '<p class="vacio">Todavía no tienes mixes. Arma una pizza y toca «Terminar pizza» para guardarla aquí.</p>'; return; }
+  box.innerHTML = all.map(m => `<div class="mix"><img src="${m.foto || ''}" alt="">
+    <div><h3>${esc(m.nombre)}</h3><p class="meta">${new Date(m.fecha).toLocaleString('es', { dateStyle: 'medium', timeStyle: 'short' })} · ${m.ingredientes.length} ingredientes</p>
+    <p class="meta">${['A', 'B'].map(k => m.platos[k] ? esc(m.platos[k].nombre) : '—').join(' + ')}</p>
+    <div class="fila" data-id="${m.id}"><button class="btn btn-rojo" data-abrir>Escuchar</button><button class="btn" data-borrar>Eliminar</button></div></div></div>`).join('');
+  box.querySelectorAll('[data-abrir]').forEach(b => b.onclick = () => abrirMix(all.find(m => m.id === b.parentElement.dataset.id)));
+  box.querySelectorAll('[data-borrar]').forEach(b => b.onclick = () => {
+    const f = b.parentElement; f.innerHTML = '<span class="nota">¿Eliminar este mix?</span><button class="btn btn-rojo" data-si>Sí, eliminar</button><button class="btn" data-no>No</button>';
+    f.querySelector('[data-si]').onclick = () => { store.set(store.get().filter(m => m.id !== f.dataset.id)); renderMixes(); };
+    f.querySelector('[data-no]').onclick = renderMixes;
+  });
+}
+async function abrirMix(m) {
+  if (!m) return; const p = initAudio(); inicio.hidden = true; $('#dlg-mixes').close(); reiniciar(); await p;
+  for (const id of m.ingredientes) await agregar(id, true);
+  let faltan = [];
+  for (const k of ['A', 'B']) {
+    const pd = m.platos[k], d = decks[k]; if (!pd) continue;
+    const t = PISTAS.find(x => x.id === pd.pista); if (!t) { faltan.push(pd.nombre); continue; }
+    d.load(t); d.setTempo(pd.tempo); d.setVol(pd.volumen); ['low', 'mid', 'high'].forEach(e => d.setEQ(e, pd.eq[e])); d.cues = pd.cues;
+  }
+  setEco(m.fx.eco); setRev(m.fx.rev); setFiltro(m.fx.filtro); setMaster(m.master);
+  ['A', 'B'].forEach(k => { if (decks[k].track && m.ingredientes.includes('aceitunas')) decks[k].play(); });
+  S.selected = m.ingredientes[0] || 'salsa'; refrescarLista(); renderPanel();
+  toast(faltan.length ? `Vuelve a subir: ${faltan.join(', ')}` : `Sonando «${m.nombre}»`);
+}
+
+refrescarLista(); renderPanel();
+</script>

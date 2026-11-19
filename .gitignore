@@ -1,0 +1,8 @@
+# Dependencias y secretos
+node_modules/
+.env
+.env.*
+
+# Archivos del sistema y respaldos automáticos de Blender
+.DS_Store
+*.blend1
